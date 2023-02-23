@@ -15,13 +15,14 @@ client.on("messageCreate", async message => {
   var msg = message.content;
 
   if (msg === prefix + 'pokemon') {
-    const embed = new Discord.MessageEmbed()
+    message.reply("Here is an image", {files: ["https://i.imgur.com/removed.png"]});
+    /*const embed = new Discord.MessageEmbed()
         .setTitle('Header')
         .setImage('pikachu.jpg')
         .setFooter('Footer');
 
     // Send the embed as a reply to the message
-    message.reply({ embeds: [embed] });
+    message.reply({ embeds: [embed] });*/
     //const attachment = new MessageAttachment('pikachu.jpg');
     //message.channel.send(`${message.author}, here is your Pikachu!`, attachment);
 
