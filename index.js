@@ -1,33 +1,22 @@
 require('dotenv').config()
 
-const { Discord, MessageEmbed } = require("discord.js");
+const { Attachment, Message, MessageEmbed, Discord } = require("discord.js");
 const Client = require('./Client');
 const client = new Client({ intents: [3243773] });
+let pokemon = [ "./pokemon/pikachu.jpg", "./pokemon/eevee.jpg", "./pokemon/charmander.jpg", "./pokemon/squirtle.jpg" ]
 
 
 client.once('ready', async () => {
     console.log('Ready!');
 });
 
-
-client.on("messageCreate", async message => {
+client.on("messageCreate", message => {
   var prefix = '!'
   var msg = message.content;
 
-  if (msg === prefix + 'pokemon') {
-    message.reply("Here is an image", {files: ["https://i.imgur.com/removed.png"]});
-    /*const embed = new Discord.MessageEmbed()
-        .setTitle('Header')
-        .setImage('pikachu.jpg')
-        .setFooter('Footer');
+  if (msg === prefix + 'pokemon') {let selected = Math.floor(Math.random() * pokemon.length);
+    message.channel.send( /*pokemon[selected]*/{files: [pokemon[selected]] });
 
-    // Send the embed as a reply to the message
-    message.reply({ embeds: [embed] });*/
-    //const attachment = new MessageAttachment('pikachu.jpg');
-    //message.channel.send(`${message.author}, here is your Pikachu!`, attachment);
-
-
-    //message.channel.send("Here is your pokemon", { files: ["./pikachu.jpg"] });
   }
   if (message.content === "ping"){
     message.reply("Pong!");
