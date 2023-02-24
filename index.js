@@ -3,7 +3,9 @@ require('dotenv').config()
 const { Attachment, Message, MessageEmbed, Discord } = require("discord.js");
 const Client = require('./Client');
 const client = new Client({ intents: [3243773] });
-let pokemon = [ "./pokemon/pikachu.jpg", "./pokemon/eevee.jpg", "./pokemon/charmander.jpg", "./pokemon/squirtle.jpg" ]
+let pokemon = [ "Pikachu", "Eevee", "Charmander", "Squirtle" ]
+let currentPokemon = null;
+let timer = 60;
 
 
 client.once('ready', async () => {
@@ -15,7 +17,9 @@ client.on("messageCreate", message => {
   var msg = message.content;
 
   if (msg === prefix + 'pokemon') {let selected = Math.floor(Math.random() * pokemon.length);
-    message.channel.send( /*pokemon[selected]*/{files: [pokemon[selected]] });
+    currentPokemon = pokemon[selected];
+    message.channel.send({ files: ["./pokemon/" + currentPokemon + ".jpg"] });
+    message.channel.send("A wild " + currentPokemon + " has spawned! You have " + timer + " seconds to catch it!");
 
   }
   if (message.content === "ping"){
