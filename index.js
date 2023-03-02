@@ -3,6 +3,10 @@ require('dotenv').config()
 const { Attachment, Message, MessageEmbed, Discord } = require("discord.js");
 const Client = require('./Client');
 const client = new Client({ intents: [3243773] });
+const SQLite = require("better-sqlite3");
+const sql = new SQLite("./userData.sqlite");
+const getInfo = require("./user.getInfo");
+
 let pokemon = [ "pikachu", "eevee", "charmander", "squirtle" ]
 let currentPokemon = null;
 let timer = 60;
@@ -11,6 +15,11 @@ let timer = 60;
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user.setStatus("online");
+
+  const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userData';").get();
+  if(!table["count(*)"]) {
+    sql.prepare("CREATE TABLE userData (userID INTEGER PRIMARY KEY, coins INTEGER, pokeballs INTEGER, xp INTEGER)").run();
+  }
 });
 
 client.once('ready', async () => {
@@ -44,7 +53,20 @@ client.on("messageCreate", message => {
     }, timer * 1000);
   }
 
-    
+  if(command === "coins"){
+    let user = message.author.id;
+    getInfo.getCoins(user, (response) => {
+      return message.reply("You have " + response + " coins!");
+    })
+  }
+
+  if(command === "mysterybox"){
+    let user = message.author.id;
+    getInfo.addCoins(user, 50, (response) => {
+        return message.reply(response);
+    })
+  }
+  
     if (command === "catch"){
       if (!args.length) {
         return message.reply("You didn't provide any arguments!");
