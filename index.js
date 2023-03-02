@@ -37,6 +37,11 @@ client.on("messageCreate", message => {
     return message.reply("Pong!");
   }
 
+  //if message is image from this bot, this is to ensure that text comes after the image
+  if (message.attachments.size > 0 && message.author.bot == true){
+    message.channel.send("A wild " + currentPokemon + " has spawned! You have " + timer + " seconds, type `!catch {pokemon}` to catch it!");
+  }
+
   //everything below here relates specifcally to commands
   var prefix = '!';
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -50,7 +55,6 @@ client.on("messageCreate", message => {
     let selected = Math.floor(Math.random() * pokemon.length);
     currentPokemon = pokemon[selected];
     message.channel.send({ files: ["./pokemon/" + currentPokemon + ".jpg"] });
-    message.channel.send("A wild " + currentPokemon + " has spawned! You have " + timer + " seconds, type `!catch {pokemon}` to catch it!");
     console.log(currentPokemon + " has spawned");
     setTimeout(() => {
       if(currentPokemon != null){
