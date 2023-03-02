@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const { Attachment, Message, MessageEmbed, Discord } = require("discord.js");
 const Client = require('./Client');
+const config = require('./config.json');
 const client = new Client({ intents: [3243773] });
 const SQLite = require("better-sqlite3");
 const sql = new SQLite("./userData.sqlite");
@@ -9,12 +10,17 @@ const getInfo = require("./user.getInfo");
 
 let pokemon = [ "pikachu", "eevee", "charmander", "squirtle" ]
 let currentPokemon = null;
+let pokeballPrice = 50;
 let timer = 60;
 
 
 client.on('ready', () => {
+  client.user.setPresence({
+      activities: [{ name: config.activity, type: Number(config.activityType) }],
+      status: 'online',
+  });
+
   console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setStatus("online");
 
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userData';").get();
   if(!table["count(*)"]) {
@@ -27,62 +33,117 @@ client.once('ready', async () => {
 });
 
 client.on("messageCreate", message => {
-  var prefix = '!'
-  var msg = message.content;
-
   if (message.content === "ping"){
-    message.reply("Pong!");
-  }
-  else if (message.content === "pong"){
-    message.reply("Ping!");
+    return message.reply("Pong!");
   }
 
+  //everything below here relates specifcally to commands
+  var prefix = '!';
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+  let user = message.author.id;
 	const args = message.content.slice(prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
+  console.log(message.author.username + " used " + message.content);
 
   if (command === "pokemon" && currentPokemon == null) {
     let selected = Math.floor(Math.random() * pokemon.length);
     currentPokemon = pokemon[selected];
     message.channel.send({ files: ["./pokemon/" + currentPokemon + ".jpg"] });
-    message.channel.send("A wild " + currentPokemon + " has spawned! You have " + timer + " seconds to catch it!");
+    message.channel.send("A wild " + currentPokemon + " has spawned! You have " + timer + " seconds, type `!catch {pokemon}` to catch it!");
+    console.log(currentPokemon + " has spawned");
     setTimeout(() => {
       if(currentPokemon != null){
-        message.channel.send("The " + currentPokemon + " has ran away!");
+        message.channel.send(currentPokemon + " has ran away!");
+        console.log(currentPokemon + " ran away");
+        currentPokemon = null;
       }
     }, timer * 1000);
   }
 
-  if(command === "coins"){
-    let user = message.author.id;
+  else if (command === "catch"){
+    if (!args.length) {
+      return message.reply("You didn't provide any arguments!");
+    }
+    else if (currentPokemon == null){
+      return message.reply("No pokemon are available to catch!");
+    }
+    else if (getInfo.getPokeballs(user, (response) => {return response}) < 1){
+      return message.reply("You have no pokeballs!");
+    }
+    else if (args[0] == currentPokemon.toLowerCase()) {
+      getInfo.setPokeballs(user, -1, (response) => {
+        message.channel.send("You've thrown a pokeball!");
+        const chance = Math.random();
+        console.log("Pokeball thrown: " + chance)
+        if (chance < 0.5) {
+          console.log(currentPokemon + " was caught");
+          getInfo.getPokeballs(user, (result) => {
+            message.reply("You've successfully caught " + currentPokemon + "\n`You now have " + result + " pokeballs`");
+          })
+          return currentPokemon = null;
+        }
+        else{
+          message.channel.send(currentPokemon + " has broken free!")
+        }
+
+      })
+    }
+    else{
+      return message.reply("Hmm... That pokemon isn't available to catch (check your spelling)");
+    }
+  }
+
+  else if(command === "coins"){
     getInfo.getCoins(user, (response) => {
       return message.reply("You have " + response + " coins!");
     })
   }
 
-  if(command === "mysterybox"){
-    let user = message.author.id;
-    getInfo.addCoins(user, 50, (response) => {
-        return message.reply(response);
+  else if(command === "pokeballs"){
+    getInfo.getPokeballs(user, (response) => {
+      return message.reply("You have " + response + " pokeballs!");
     })
   }
-  
-    if (command === "catch"){
-      if (!args.length) {
+
+  else if(command === "mysterybox"){
+    getInfo.setCoins(user, 50, (response) => {
+        return message.reply("You've found a mystery box and recieved 50 coins!\nYou now have " + response + " coins.");
+    })
+  }
+
+  else if(command === "shop"){
+    return message.reply("```Pokeball | " + pokeballPrice + " coins```Type `!buy {item}` to purchase.");
+  }
+
+  else if (command === "buy"){
+    getInfo.getCoins(user, (coins) => {
+      if (coins<1){
+        return message.reply("You don't have enough coins!");
+      }
+      else if (!args.length) {
         return message.reply("You didn't provide any arguments!");
       }
-      else if (currentPokemon == null){
-        return message.reply("No pokemon are available to catch!");
-      }
-      else if (args[0] == currentPokemon.toLowerCase()) {
-        message.reply("You've successfully caught a " + args[0]);
-        currentPokemon = null;
+      else if (args[0].toLowerCase() === "pokeball" && coins >= pokeballPrice){
+        getInfo.setCoins(user, -pokeballPrice, (myCoins) => {
+          getInfo.setPokeballs(user, 1, (myPokeballs) => {
+            return message.reply("You have bought a pokeball!\n`You now have " + myCoins + " coins and " + myPokeballs + " pokeballs`");
+          })
+        })
       }
       else{
-        message.reply("Hmm... That pokemon isn't available to catch (check your spelling)");
+        return message.reply("You can't buy that!");
       }
-    }
+    });
+  }
 
+  else if (command === "help"){
+    message.reply("```!pokeballs | See how many pokeballs you have``````!catch | Catch the current pokemon``````!shop | See what is avaliable in the shop``````!buy | Buy an item from the shop``````!coins | See how many coins you have```")
+  }
+/*
+  else{
+    message.reply("Invalid command, check logs for error");
+  }*/
 });
 
 
