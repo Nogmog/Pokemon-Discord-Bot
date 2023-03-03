@@ -31,15 +31,16 @@ client.on('ready', () => {
   const pokemonSQL = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='pokemon';").get();
   if(!pokemonSQL["count(*)"]){
     console.log("Creating pokemon table..");
-    sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY AUTOINCREMENT, rarity INTEGER, maxHealth INTEGER)").run();
+    sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY, name STRING, rarity INTEGER, maxHealth INTEGER, imgName STRING)").run();
 
     // adds all the pokemon - TBD
+    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Pikachu", 1, 100, "pikachu.jpg");
   }
 
   const userBox = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userBox';").get();
   if(!userBox["count(*)"]){
     console.log("Creating userBox table..");
-    sql.prepare("CREATE TABLE userBox (boxID INTEGER PRIMARY KEY AUTOINCREMENT, userID INTEGER, pokemonID INTEGER, pokemonHealth INTEGER, pokemonLevel INTEGER, pokemonXP INTEGER, FOREIGN KEY(userID) REFERENCES userData(userID), FOREIGN KEY(pokemonID) REFERENCES pokemon(pokemonID))").run();
+    sql.prepare("CREATE TABLE userBox (boxID INTEGER PRIMARY KEY, userID INTEGER, pokemonID INTEGER, pokemonHealth INTEGER, pokemonLevel INTEGER, pokemonXP INTEGER, FOREIGN KEY(userID) REFERENCES userData(userID), FOREIGN KEY(pokemonID) REFERENCES pokemon(pokemonID))").run();
   }
 });
 
