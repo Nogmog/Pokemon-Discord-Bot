@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { Attachment, Message, MessageEmbed, Discord } = require("discord.js");
+const { Attachment, Message, MessageEmbed, Discord, EmbedBuilder } = require("discord.js");
 const Client = require('./Client');
 const config = require('./config.json');
 const client = new Client({ intents: [3243773] });
@@ -140,7 +140,15 @@ client.on("messageCreate", message => {
       }
     });
   }
+  else if(command === "stats"){
+    let person = user;
+    getInfo.playerData(person, (data) => {
+      if(data === "User not found") return message.reply("This user doesn't exist");
 
+      return message.channel.send("**Your stats**\n```Coins: " + data.coins + "\nPokeballs: " + data.pokeballs + "\nXP: " + data.xp + "```");
+    })
+  }
+  
   else if (command === "help"){
     message.reply("```!pokeballs | See how many pokeballs you have``````!catch | Catch the current pokemon``````!shop | See what is avaliable in the shop``````!buy | Buy an item from the shop``````!coins | See how many coins you have```")
   }

@@ -8,6 +8,16 @@ function createUser(userID){
     console.log("User created");
 };
 
+// gives all data on a user
+const playerData = (userID, done) => {
+    const statement = sql.prepare("SELECT * FROM userData WHERE userID=?;");
+    let user = statement.get(userID);
+    if(user === undefined){
+        return done("User not found");
+    }
+    return done(user);
+}
+
 // goes into db to get a specific users amount of coins
 const getCoins = (userID, done) => {
     const statement = sql.prepare("SELECT coins FROM userData WHERE userID=?")
@@ -59,6 +69,7 @@ const setPokeballs = (userID, amount, done) => {
 }
 
 module.exports = {
+    playerData: playerData,
     getCoins: getCoins,
     setCoins: setCoins,
     getPokeballs: getPokeballs,
