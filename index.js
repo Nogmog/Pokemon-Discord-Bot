@@ -24,7 +24,22 @@ client.on('ready', () => {
 
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userData';").get();
   if(!table["count(*)"]) {
+    console.log("Creating userData table..");
     sql.prepare("CREATE TABLE userData (userID INTEGER PRIMARY KEY, coins INTEGER, pokeballs INTEGER, xp INTEGER)").run();
+  }
+
+  const pokemonSQL = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='pokemon';").get();
+  if(!pokemonSQL["count(*)"]){
+    console.log("Creating pokemon table..");
+    sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY AUTOINCREMENT, rarity INTEGER, maxHealth INTEGER)").run();
+
+    // adds all the pokemon - TBD
+  }
+
+  const userBox = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userBox';").get();
+  if(!userBox["count(*)"]){
+    console.log("Creating userBox table..");
+    sql.prepare("CREATE TABLE userBox (boxID INTEGER PRIMARY KEY AUTOINCREMENT, userID INTEGER, pokemonID INTEGER, pokemonHealth INTEGER, pokemonLevel INTEGER, pokemonXP INTEGER, FOREIGN KEY(userID) REFERENCES userData(userID), FOREIGN KEY(pokemonID) REFERENCES pokemon(pokemonID))").run();
   }
 });
 
