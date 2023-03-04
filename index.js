@@ -9,6 +9,8 @@ const sql = new SQLite("./userData.sqlite");
 
 const userInfo = require("./user.getInfo");
 const pokemonInfo = require("./pokemon.getInfo");
+const boxInfo = require("./box.getInfo");
+
 
 let currentPokemon = null;
 let pokeballPrice = 50;
@@ -44,7 +46,7 @@ client.on('ready', () => {
   const userBox = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userBox';").get();
   if(!userBox["count(*)"]){
     console.log("Creating userBox table..");
-    sql.prepare("CREATE TABLE userBox (boxID INTEGER PRIMARY KEY, userID INTEGER, pokemonID INTEGER, pokemonHealth INTEGER, pokemonLevel INTEGER, pokemonXP INTEGER, FOREIGN KEY(userID) REFERENCES userData(userID), FOREIGN KEY(pokemonID) REFERENCES pokemon(pokemonID))").run();
+    sql.prepare("CREATE TABLE userBox (boxID INTEGER PRIMARY KEY, userID INTEGER, pokemonID INTEGER, health INTEGER, maxHealth INTEGER, level INTEGER, xp INTEGER, FOREIGN KEY(userID) REFERENCES userData(userID), FOREIGN KEY(pokemonID) REFERENCES pokemon(pokemonID))").run();
   }
 });
 
@@ -101,10 +103,12 @@ client.on("messageCreate", message => {
         const chance = Math.random();
         console.log("Pokeball thrown: " + chance)
         if (chance < 0.5) {
+          boxInfo.addPokemon(currentPokemon, user);
           console.log(currentPokemon.name + " was caught");
           userInfo.getPokeballs(user, (result) => {
             message.reply("You've successfully caught " + currentPokemon.name + "\n`You now have " + result + " pokeballs`");
           })
+          
           return currentPokemon = null;
         }
         else{
