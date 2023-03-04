@@ -8,6 +8,7 @@ const SQLite = require("better-sqlite3");
 const sql = new SQLite("./userData.sqlite");
 
 const userInfo = require("./user.getInfo");
+const pokemonInfo = require("./pokemon.getInfo");
 
 let pokemon = [ "pikachu", "eevee", "charmander", "squirtle" ]
 let currentPokemon = null;
@@ -59,7 +60,7 @@ client.on("messageCreate", message => {
 
   //if message is image from this bot, this is to ensure that text comes after the image
   if (message.attachments.size > 0 && message.author.bot == true){
-    message.channel.send("A wild " + currentPokemon + " has spawned! You have " + timer + " seconds, type `!catch {pokemon}` to catch it!");
+    message.channel.send("A wild " + currentPokemon.name + " has spawned! You have " + timer + " seconds, type `!catch {pokemon}` to catch it!");
   }
 
   //everything below here relates specifcally to commands
@@ -72,14 +73,18 @@ client.on("messageCreate", message => {
   console.log(message.author.username + " used " + message.content);
 
   if (command === "pokemon" && currentPokemon == null) {
-    let selected = Math.floor(Math.random() * pokemon.length);
-    currentPokemon = pokemon[selected];
-    message.channel.send({ files: ["./pokemon/" + currentPokemon + ".jpg"] });
-    console.log(currentPokemon + " has spawned");
+    // let selected = Math.floor(Math.random() * pokemon.length);
+    // currentPokemon = pokemon[selected];
+    // message.channel.send({ files: ["./pokemon/" + currentPokemon + ".jpg"] });
+    // console.log(currentPokemon + " has spawned");
+    pokemonInfo.randomPokemon((item) => {
+      currentPokemon = item;
+      message.channel.send({ files: ["./pokemon/" + currentPokemon.imgName] });
+    })
     setTimeout(() => {
       if(currentPokemon != null){
-        message.channel.send(currentPokemon + " has ran away!");
-        console.log(currentPokemon + " ran away");
+        message.channel.send(currentPokemon.name + " has ran away!");
+        console.log(currentPokemon.name + " ran away");
         currentPokemon = null;
       }
     }, timer * 1000);
@@ -95,20 +100,20 @@ client.on("messageCreate", message => {
     else if (userInfo.getPokeballs(user, (response) => {return response}) < 1){
       return message.reply("You have no pokeballs!");
     }
-    else if (args[0] == currentPokemon.toLowerCase()) {
+    else if (args[0] == currentPokemon.name.toLowerCase()) {
       userInfo.setPokeballs(user, -1, (response) => {
         message.channel.send("You've thrown a pokeball!");
         const chance = Math.random();
         console.log("Pokeball thrown: " + chance)
         if (chance < 0.5) {
-          console.log(currentPokemon + " was caught");
+          console.log(currentPokemon.name + " was caught");
           userInfo.getPokeballs(user, (result) => {
-            message.reply("You've successfully caught " + currentPokemon + "\n`You now have " + result + " pokeballs`");
+            message.reply("You've successfully caught " + currentPokemon.name + "\n`You now have " + result + " pokeballs`");
           })
           return currentPokemon = null;
         }
         else{
-          message.channel.send(currentPokemon + " has broken free!")
+          message.channel.send(currentPokemon.name + " has broken free!")
         }
 
       })
