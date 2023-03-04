@@ -6,7 +6,8 @@ const config = require('./config.json');
 const client = new Client({ intents: [3243773] });
 const SQLite = require("better-sqlite3");
 const sql = new SQLite("./userData.sqlite");
-const getInfo = require("./user.getInfo");
+
+const userInfo = require("./user.getInfo");
 
 let pokemon = [ "pikachu", "eevee", "charmander", "squirtle" ]
 let currentPokemon = null;
@@ -35,6 +36,9 @@ client.on('ready', () => {
 
     // adds all the pokemon - TBD
     sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Pikachu", 1, 100, "pikachu.jpg");
+    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Eevee", 1, 100, "eevee.jpg");
+    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Charmander", 1, 150, "charmander.jpg");
+    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Squirtle", 1, 200, "squirtle.jpg");
   }
 
   const userBox = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userBox';").get();
@@ -88,17 +92,17 @@ client.on("messageCreate", message => {
     else if (currentPokemon == null){
       return message.reply("No pokemon are available to catch!");
     }
-    else if (getInfo.getPokeballs(user, (response) => {return response}) < 1){
+    else if (userInfo.getPokeballs(user, (response) => {return response}) < 1){
       return message.reply("You have no pokeballs!");
     }
     else if (args[0] == currentPokemon.toLowerCase()) {
-      getInfo.setPokeballs(user, -1, (response) => {
+      userInfo.setPokeballs(user, -1, (response) => {
         message.channel.send("You've thrown a pokeball!");
         const chance = Math.random();
         console.log("Pokeball thrown: " + chance)
         if (chance < 0.5) {
           console.log(currentPokemon + " was caught");
-          getInfo.getPokeballs(user, (result) => {
+          userInfo.getPokeballs(user, (result) => {
             message.reply("You've successfully caught " + currentPokemon + "\n`You now have " + result + " pokeballs`");
           })
           return currentPokemon = null;
@@ -115,19 +119,19 @@ client.on("messageCreate", message => {
   }
 
   else if(command === "coins"){
-    getInfo.getCoins(user, (response) => {
+    userInfo.getCoins(user, (response) => {
       return message.reply("You have " + response + " coins!");
     })
   }
 
   else if(command === "pokeballs"){
-    getInfo.getPokeballs(user, (response) => {
+    userInfo.getPokeballs(user, (response) => {
       return message.reply("You have " + response + " pokeballs!");
     })
   }
 
   else if(command === "mysterybox"){
-    getInfo.setCoins(user, 50, (response) => {
+    userInfo.setCoins(user, 50, (response) => {
         return message.reply("You've found a mystery box and recieved 50 coins!\nYou now have " + response + " coins.");
     })
   }
@@ -137,7 +141,7 @@ client.on("messageCreate", message => {
   }
 
   else if (command === "buy"){
-    getInfo.getCoins(user, (coins) => {
+    userInfo.getCoins(user, (coins) => {
       if (coins<1){
         return message.reply("You don't have enough coins!");
       }
@@ -145,8 +149,8 @@ client.on("messageCreate", message => {
         return message.reply("You didn't provide any arguments!");
       }
       else if (args[0].toLowerCase() === "pokeball" && coins >= pokeballPrice){
-        getInfo.setCoins(user, -pokeballPrice, (myCoins) => {
-          getInfo.setPokeballs(user, 1, (myPokeballs) => {
+        userInfo.setCoins(user, -pokeballPrice, (myCoins) => {
+          userInfo.setPokeballs(user, 1, (myPokeballs) => {
             return message.reply("You have bought a pokeball!\n`You now have " + myCoins + " coins and " + myPokeballs + " pokeballs`");
           })
         })
@@ -158,7 +162,7 @@ client.on("messageCreate", message => {
   }
   else if(command === "stats"){
     let person = user;
-    getInfo.playerData(person, (data) => {
+    userInfo.playerData(person, (data) => {
       if(data === "User not found") return message.reply("This user doesn't exist");
 
       return message.channel.send("**Your stats**\n```Coins: " + data.coins + "\nPokeballs: " + data.pokeballs + "\nXP: " + data.xp + "```");
