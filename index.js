@@ -10,7 +10,6 @@ const sql = new SQLite("./userData.sqlite");
 const userInfo = require("./user.getInfo");
 const pokemonInfo = require("./pokemon.getInfo");
 
-let pokemon = [ "pikachu", "eevee", "charmander", "squirtle" ]
 let currentPokemon = null;
 let pokeballPrice = 50;
 let timer = 60;
@@ -73,10 +72,6 @@ client.on("messageCreate", message => {
   console.log(message.author.username + " used " + message.content);
 
   if (command === "pokemon" && currentPokemon == null) {
-    // let selected = Math.floor(Math.random() * pokemon.length);
-    // currentPokemon = pokemon[selected];
-    // message.channel.send({ files: ["./pokemon/" + currentPokemon + ".jpg"] });
-    // console.log(currentPokemon + " has spawned");
     pokemonInfo.randomPokemon((item) => {
       currentPokemon = item;
       message.channel.send({ files: ["./pokemon/" + currentPokemon.imgName] });
