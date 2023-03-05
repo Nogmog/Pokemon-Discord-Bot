@@ -184,10 +184,17 @@ client.on("messageCreate", message => {
   }
   else if(command === "stats"){
     let person = user;
+    if(message.mentions.users.first() && args[0] !== null){
+      person = args[0].slice(2, -1);
+      if(!client.users.cache.get(person)){
+        return message.reply("To find someones stats you need to mention them");
+      }
+    }
+
     userInfo.playerData(person, (data) => {
       if(data === "User not found") return message.reply("This user doesn't exist");
 
-      return message.channel.send("**Your stats**\n```Coins: " + data.coins + "\nPokeballs: " + data.pokeballs + "\nXP: " + data.xp + "```");
+      return message.channel.send("**" + client.users.cache.get(person).username + "'s stats**\n```Coins: " + data.coins + "\nPokeballs: " + data.pokeballs + "\nXP: " + data.xp + "```");
     })
   }
   
