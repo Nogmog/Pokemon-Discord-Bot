@@ -10,6 +10,12 @@ const randomPokemon = (done) => {
     return done(selectedPokemon);
 }
 
+const pokemonInfo = (pokemonID, done) => {
+    const statement = sql.prepare("SELECT * FROM pokemon WHERE pokemonID=?").get(pokemonID);
+    return done(statement);
+}
+
 module.exports = {
     randomPokemon: randomPokemon,
+    pokemonInfo: pokemonInfo,
 }

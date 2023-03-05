@@ -105,6 +105,7 @@ client.on("messageCreate", message => {
         if (chance < 0.5) {
           boxInfo.addPokemon(currentPokemon, user);
           console.log(currentPokemon.name + " was caught");
+
           userInfo.getPokeballs(user, (result) => {
             message.reply("You've successfully caught " + currentPokemon.name + "\n`You now have " + result + " pokeballs`");
           })
@@ -120,6 +121,23 @@ client.on("messageCreate", message => {
     else{
       return message.reply("Hmm... That pokemon isn't available to catch (check your spelling)");
     }
+  }
+
+  else if(command === "box"){
+    boxInfo.allPokemonForUser(user, (response) => {
+      console.log(response);
+      if(response === undefined){
+        return message.reply("You currently haven't caught any pokemon!");
+      }
+      let msg = "**__Caught pokemon:__**\n";
+      response.forEach((i) => {
+        pokemonInfo.pokemonInfo(i.pokemonID, (data) => {
+          msg += data.name + ": HP:" + i.health + "/" + i.maxHealth + ", level " + i.level + "\n";
+        })
+      })
+
+      return message.reply(msg);
+    })
   }
 
   else if(command === "coins"){

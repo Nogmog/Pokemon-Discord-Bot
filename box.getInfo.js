@@ -3,8 +3,8 @@ const sql = new SQLite("./userData.sqlite");
 
 //gets all pokemon for a user
 const allPokemonForUser = (userID, done) => {
-    const statement = sql.prepare("SELECT * FROM userBox WHERE userID=?;").get(userID);
-    return done();
+    const statement = sql.prepare("SELECT * FROM userBox WHERE userID=?;").all(userID);
+    return done(statement);
 }
 
 //adds a pokemon into the userbox
