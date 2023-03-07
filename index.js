@@ -170,6 +170,18 @@ client.on("messageCreate", message => {
       else if (!args.length) {
         return message.reply("You didn't provide any arguments!");
       }
+      else if(args[0].toLowerCase() === "pokeball" && args[1] == parseInt(args[1])){ // buy multiple pokeballs
+        let buyAmount = parseInt(args[1]);
+        if(coins >= pokeballPrice * buyAmount){
+          userInfo.setCoins(user, -pokeballPrice * buyAmount, (myCoins) => {
+            userInfo.setPokeballs(user, buyAmount, (myPokeballs) => {
+              return message.reply("You have bought " + buyAmount + " pokeballs!\n`You now have " + myCoins + " coins and " + myPokeballs + " pokeballs`");
+            })
+          })
+        }else{
+          return message.reply("You don't have enough coins!");
+        }
+      }
       else if (args[0].toLowerCase() === "pokeball" && coins >= pokeballPrice){
         userInfo.setCoins(user, -pokeballPrice, (myCoins) => {
           userInfo.setPokeballs(user, 1, (myPokeballs) => {
