@@ -31,6 +31,28 @@ client.on('ready', () => {
     sql.prepare("CREATE TABLE userData (userID INTEGER PRIMARY KEY, coins INTEGER, pokeballs INTEGER, xp INTEGER)").run();
   }
 
+  const shopTable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='shop';").get();
+  if(!shopTable["count(*)"]) {
+    console.log("Creating shop table..");
+    sql.prepare("CREATE TABLE shop (itemID INTEGER PRIMARY KEY, name STRING, price INTEGER, description STRING)").run();
+    
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Pokeball", 50, "A simple Pokeball used to catch pokemon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Potion", 50, "Restores 20HP to a pokemon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Super Potion", 100, "Restores 60HP to a pokemon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Hyper Potion", 150, "Restores 120HP to a pokemon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Max Potion", 250, "Restores a pokemon's HP to maximum.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Revive", 300, "Revives a pokemon and restores half of it's health.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Fire Stone", 1000, "Causes Eevee to evolve into Flareon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Water Stone", 1000, "Causes Eevee to evolve into Vaporeon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Thunder Stone", 1000, "Causes Eevee to evolve into Jolteon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Leaf Stone", 1000, "Causes Eevee to evolve into Leafeon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Ice Stone", 1000, "Causes Eevee to evolve into Glaceon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Night Stone", 1000, "Causes Eevee to evolve into Umbreon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Day Stone", 1000, "Causes Eevee to evolve into Espeon.");
+    sql.prepare("INSERT INTO shop (name, price, description) VALUES (?, ?, ?);").run("Fairy Stone", 1000, "Causes Eevee to evolve into Slyveon.");
+  }
+
+
   const pokemonSQL = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='pokemon';").get();
   if(!pokemonSQL["count(*)"]){
     console.log("Creating pokemon table..");
