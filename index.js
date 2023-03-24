@@ -56,10 +56,10 @@ client.on('ready', () => {
   const pokemonSQL = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='pokemon';").get();
   if(!pokemonSQL["count(*)"]){
     console.log("Creating pokemon table..");
-    sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY, name STRING, rarity INTEGER, maxHealth INTEGER, imgName STRING)").run();
+    sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY, name STRING, rarity INTEGER, maxHealth INTEGER, imgName STRING, type STRING, evolveLevel INTEGER, CatchRate INTEGER, AttackNoEffect INTEGER, AttackSuper INTEGER, AttackNotVery INTEGER)").run();
 
     // adds all the pokemon - TBD
-    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Pikachu", 1, 100, "pikachu.jpg");
+    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName, type) VALUES (?, ?, ?, ?, ?);").run("Pikachu", 1, 100, "pikachu.jpg", "electric");
     sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Eevee", 1, 100, "eevee.jpg");
     sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Charmander", 1, 150, "charmander.jpg");
     sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Squirtle", 1, 200, "squirtle.jpg");
