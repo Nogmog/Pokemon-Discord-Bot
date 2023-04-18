@@ -28,7 +28,7 @@ client.on('ready', () => {
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userData';").get();
   if(!table["count(*)"]) {
     console.log("Creating userData table..");
-    sql.prepare("CREATE TABLE userData (userID INTEGER PRIMARY KEY, coins INTEGER, pokeballs INTEGER, xp INTEGER)").run();
+    sql.prepare("CREATE TABLE userData (userID INTEGER PRIMARY KEY, coins INTEGER, pokeballs INTEGER, xp INTEGER, buddyID INTEGER, FOREIGN KEY(buddyID) REFERENCES userBox(boxID))").run();
   }
 
   const shopTable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='shop';").get();
@@ -147,14 +147,15 @@ client.on("messageCreate", message => {
 
   else if(command === "box"){
     boxInfo.allPokemonForUser(user, (response) => {
-      console.log(response);
       if(response === undefined){
         return message.reply("You currently haven't caught any pokemon!");
       }
       let msg = "**__Caught pokemon:__**\n";
+      let num = 0
       response.forEach((i) => {
         pokemonInfo.pokemonInfo(i.pokemonID, (data) => {
-          msg += data.name + ": HP:" + i.health + "/" + i.maxHealth + ", level " + i.level + "\n";
+          num += 1;
+          msg += num+". " + data.name + ": HP:" + i.health + "/" + i.maxHealth + ", level " + i.level + "\n";
         })
       })
 
@@ -162,16 +163,35 @@ client.on("messageCreate", message => {
     })
   }
 
-  else if(command === "coins"){
-    userInfo.getCoins(user, (response) => {
-      return message.reply("You have " + response + " coins!");
-    })
-  }
-
-  else if(command === "pokeballs"){
-    userInfo.getPokeballs(user, (response) => {
-      return message.reply("You have " + response + " pokeballs!");
-    })
+  else if(command === "setbuddy"){
+    if (args[0] === null){
+      return message.reply("You need to choose a number to pick from the box")
+    }
+    else{
+      boxInfo.allPokemonForUser(user, (response) => {
+        try{
+          let userChoice = args[0] - 1
+          userInfo.setBuddy(user, response[userChoice].boxID, (res) => {
+            return message.reply("Buddy successfully set");
+          })
+        }
+        catch(error) {
+          return message.reply("Buddy not found")
+        }
+        // let num = 0;
+        // response.forEach((i) => {
+        //   num++;
+        //   if(num == args[0]){
+        //     userInfo.setBuddy(i.userID, i.boxID, (res) => {
+        //       return message.reply("Buddy successfully set")
+        //     })
+        //   }
+        // })
+        // if(num != args[0]){
+        //   return message.reply("Buddy was not found")
+        // }
+      })
+    }
   }
 
   else if(command === "mysterybox"){

@@ -68,10 +68,18 @@ const setPokeballs = (userID, amount, done) => {
     return done(userPokeballs.pokeballs + amount);
 }
 
+const setBuddy = (userID, buddy, done) => {
+    console.log(userID, buddy);
+    const setBud = sql.prepare("UPDATE userData SET buddyID=? WHERE userID=?");
+    setBud.run(buddy, userID);
+    return done(null);
+}
+
 module.exports = {
-    playerData: playerData,
+    playerData: playerData, 
     getCoins: getCoins,
     setCoins: setCoins,
     getPokeballs: getPokeballs,
-    setPokeballs : setPokeballs
+    setPokeballs : setPokeballs,
+    setBuddy: setBuddy
 }
