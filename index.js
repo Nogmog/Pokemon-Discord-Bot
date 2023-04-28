@@ -1,4 +1,4 @@
-require('dotenv').config()
+
 
 const { Attachment, Message, MessageEmbed, Discord, EmbedBuilder } = require("discord.js");
 const Client = require('./Client');
@@ -53,16 +53,21 @@ client.on('ready', () => {
   }
 
 
-  const pokemonSQL = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='pokemon';").get();
-  if(!pokemonSQL["count(*)"]){
+  const pokemonSQL = sql.prepare("SELECT count() FROM sqlite_master WHERE type='table' AND name='pokemon';").get();
+  if(!pokemonSQL["count()"]){
     console.log("Creating pokemon table..");
-    sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY, name STRING, rarity INTEGER, maxHealth INTEGER, imgName STRING, type STRING, evolveLevel INTEGER, CatchRate INTEGER, AttackNoEffect INTEGER, AttackSuper INTEGER, AttackNotVery INTEGER)").run();
+    sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY, name STRING, rarity String, maxHealth INTEGER, imgName STRING, type STRING, evolveLevel INTEGER, CatchRate INTEGER, AttackNotVery INTEGER, AttackNoEffect INTEGER, AttackSuper INTEGER)").run();
 
     // adds all the pokemon - TBD
-    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName, type) VALUES (?, ?, ?, ?, ?);").run("Pikachu", 1, 100, "pikachu.jpg", "electric");
-    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Eevee", 1, 100, "eevee.jpg");
-    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Charmander", 1, 150, "charmander.jpg");
-    sql.prepare("INSERT INTO pokemon (name, rarity, maxHealth, imgName) VALUES (?, ?, ?, ?);").run("Squirtle", 1, 200, "squirtle.jpg");
+    sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(1, "Charmander", "Common", 282, "INSERT-IMAGE-NAME", "Fire", 16, 47, 52, 98, 223);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(2, "Charmeleon", "Rare", 320, "INSERT-IMAGE-NAME", "Fire", 36, 24, 64, 119, 249);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(3, "Charizard", "Super Rare", 360, "INSERT-IMAGE-NAME", "Fire, Flying", null, 12, 84, 155, 293);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(4, "Bulbasaur", "Common", 294, "INSERT-IMAGE-NAME", "Grass, Poison", 16, 47, 49, 92, 216);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(5, "Ivysaur", "Rare", 324, "INSERT-IMAGE-NAME", "Grass, Poison", 32, 24, 62, 116, 245);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(6, "Venasaur", "Super Rare", 364, "INSERT-IMAGE-NAME", "Grass, Poison", null, 12, 82, 152, 289);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(7, "Squirtle", "Common", 292, "INSERT-IMAGE-NAME", "Water", 16, 47, 48, 90, 214);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(8, "Wartotle", "Rare", 322, "INSERT-IMAGE-NAME", "Water", 36, 24, 63, 117, 247);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(9, "Blastoise", "Super Rare", 362, "INSERT-IMAGE-NAME", "Water", null, 12, 83, 153, 291);
   }
 
   const userBox = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userBox';").get();
@@ -262,4 +267,4 @@ client.on("messageCreate", message => {
 });
 
 
-client.login(process.env.DISCORD_TOKEN);
+client.login("MTA3MzU3OTk5MjAxOTExMjA3Nw.GOlU3n.aPlXMYIexSdDz7Emk5NFnH0qFPY5flFMK4MGDs");
