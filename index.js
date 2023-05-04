@@ -28,7 +28,7 @@ client.on('ready', () => {
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='userData';").get();
   if(!table["count(*)"]) {
     console.log("Creating userData table..");
-    sql.prepare("CREATE TABLE userData (userID INTEGER PRIMARY KEY, coins INTEGER, pokeballs INTEGER, xp INTEGER, buddyID INTEGER, FOREIGN KEY(buddyID) REFERENCES userBox(boxID))").run();
+    sql.prepare("CREATE TABLE userData (userID INTEGER PRIMARY KEY, coins INTEGER, pokeballs INTEGER, xp INTEGER, level INTEGER, buddyID INTEGER, FOREIGN KEY(buddyID) REFERENCES userBox(boxID))").run();
   }
 
   const shopTable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='shop';").get();
@@ -129,9 +129,11 @@ client.on("messageCreate", message => {
           console.log(currentPokemon.name + " was caught");
 
           userInfo.getPokeballs(user, (result) => {
-            message.reply("You've successfully caught " + currentPokemon.name + "\n`You now have " + result + " pokeballs`");
+            userInfo.gainXP(user, 10, (resultXP) => {
+              message.reply("You've successfully caught " + currentPokemon.name + "\n`You now have " + result + " pokeballs \nYou have gained 10XP`");
+            })
           })
-          
+
           return currentPokemon = null;
         }
         else{
@@ -178,18 +180,6 @@ client.on("messageCreate", message => {
         catch(error) {
           return message.reply("Buddy not found")
         }
-        // let num = 0;
-        // response.forEach((i) => {
-        //   num++;
-        //   if(num == args[0]){
-        //     userInfo.setBuddy(i.userID, i.boxID, (res) => {
-        //       return message.reply("Buddy successfully set")
-        //     })
-        //   }
-        // })
-        // if(num != args[0]){
-        //   return message.reply("Buddy was not found")
-        // }
       })
     }
   }

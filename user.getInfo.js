@@ -56,7 +56,7 @@ const getPokeballs = (userID, done) => {
 
 //sets users pokeballs
 const setPokeballs = (userID, amount, done) => {
-    const getPokeballs = sql.prepare("SELECT pokeballs FROM userData WHERE userID=?")
+    const getPokeballs = sql.prepare("SELECT pokeballs FROM userData WHERE userID=?");
     const setPokeballs = sql.prepare("UPDATE userData SET pokeballs=? WHERE userID=?");
 
     let userPokeballs = getPokeballs.get(userID)
@@ -75,11 +75,24 @@ const setBuddy = (userID, buddy, done) => {
     return done(null);
 }
 
+const gainXP = (userID, amount, done) => {
+    const updateXP = sql.prepare("UPDATE userData SET xp=? WHERE userID=?;");
+    const getXP = sql.prepare("SELECT xp FROM userData WHERE userID=?;");
+
+    let userXP = getXP.get(userID);
+    let newXP = userXP.xp + amount;
+
+    updateXP.run(newXP, userID);
+    
+    return done(true);
+}
+
 module.exports = {
     playerData: playerData, 
     getCoins: getCoins,
     setCoins: setCoins,
     getPokeballs: getPokeballs,
     setPokeballs : setPokeballs,
-    setBuddy: setBuddy
+    setBuddy: setBuddy,
+    gainXP: gainXP
 }
