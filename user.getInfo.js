@@ -3,8 +3,8 @@ const sql = new SQLite("./userData.sqlite");
 
 
 function createUser(userID){
-    const statement = sql.prepare("INSERT INTO userData (userID, coins, pokeballs, xp) VALUES (?, ?, ?, ?);");
-    statement.run(userID, 100, 5, 0);
+    const statement = sql.prepare("INSERT INTO userData (userID, coins, pokeballs, xp, level) VALUES (?, ?, ?, ?, ?);");
+    statement.run(userID, 100, 5, 0, 1);
     console.log("User created");
 };
 

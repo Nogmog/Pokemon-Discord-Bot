@@ -59,13 +59,13 @@ client.on('ready', () => {
     sql.prepare("CREATE TABLE pokemon (pokemonID INTEGER PRIMARY KEY, name STRING, rarity String, maxHealth INTEGER, imgName STRING, type STRING, evolveLevel INTEGER, CatchRate INTEGER, AttackNotVery INTEGER, AttackNoEffect INTEGER, AttackSuper INTEGER)").run();
 
     // adds all the pokemon - TBD
-    sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(1, "Charmander", "Common", 282, "INSERT-IMAGE-NAME", "Fire", 16, 47, 52, 98, 223);
+    sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(1, "Charmander", "Common", 282, "charmander.jpg", "Fire", 16, 47, 52, 98, 223);
 	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(2, "Charmeleon", "Rare", 320, "INSERT-IMAGE-NAME", "Fire", 36, 24, 64, 119, 249);
 	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(3, "Charizard", "Super Rare", 360, "INSERT-IMAGE-NAME", "Fire, Flying", null, 12, 84, 155, 293);
 	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(4, "Bulbasaur", "Common", 294, "INSERT-IMAGE-NAME", "Grass, Poison", 16, 47, 49, 92, 216);
 	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(5, "Ivysaur", "Rare", 324, "INSERT-IMAGE-NAME", "Grass, Poison", 32, 24, 62, 116, 245);
 	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(6, "Venasaur", "Super Rare", 364, "INSERT-IMAGE-NAME", "Grass, Poison", null, 12, 82, 152, 289);
-	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(7, "Squirtle", "Common", 292, "INSERT-IMAGE-NAME", "Water", 16, 47, 48, 90, 214);
+	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(7, "Squirtle", "Common", 292, "squirtle.jpg", "Water", 16, 47, 48, 90, 214);
 	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(8, "Wartotle", "Rare", 322, "INSERT-IMAGE-NAME", "Water", 36, 24, 63, 117, 247);
 	sql.prepare("INSERT INTO pokemon (pokemonID, name, rarity, maxHealth, imgName, type, evolveLevel, CatchRate, AttackNotVery, AttackNoEffect, AttackSuper) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);").run(9, "Blastoise", "Super Rare", 362, "INSERT-IMAGE-NAME", "Water", null, 12, 83, 153, 291);
   }
@@ -243,7 +243,7 @@ client.on("messageCreate", message => {
     userInfo.playerData(person, (data) => {
       if(data === "User not found") return message.reply("This user doesn't exist");
 
-      return message.channel.send("**" + client.users.cache.get(person).username + "'s stats**\n```Coins: " + data.coins + "\nPokeballs: " + data.pokeballs + "\nXP: " + data.xp + "```");
+      return message.channel.send("**" + client.users.cache.get(person).username + "'s stats**\n```Coins: " + data.coins + "\nPokeballs: " + data.pokeballs + " \nLevel: " + data.level + "\nXP: " + data.xp + "```");
     })
   }
   
@@ -256,5 +256,4 @@ client.on("messageCreate", message => {
   }*/
 });
 
-
-client.login("MTA3MzU3OTk5MjAxOTExMjA3Nw.GOlU3n.aPlXMYIexSdDz7Emk5NFnH0qFPY5flFMK4MGDs");
+client.login(process.env.DISCORD_TOKEN);
