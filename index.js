@@ -175,12 +175,12 @@ client.on("messageCreate", message => {
     else if (userInfo.getPokeballs(user, (response) => {return response}) < 1){
       return message.reply("You have no pokeballs!");
     }
-    else if (args[0] == currentPokemon.name.toLowerCase()) {
+    else if (args[0].toLowerCase() == currentPokemon.name.toLowerCase()) {
       userInfo.setPokeballs(user, -1, (response) => {
         message.channel.send("You've thrown a pokeball!");
         const chance = Math.random();
         console.log("Pokeball thrown: " + chance)
-        if (chance < 0.5) {
+        if (chance < (currentPokemon.CatchRate / 100)) {
           boxInfo.addPokemon(currentPokemon, user);
           console.log(currentPokemon.name + " was caught");
 
@@ -204,7 +204,16 @@ client.on("messageCreate", message => {
   }
 
   else if(command === "box"){
-    boxInfo.allPokemonForUser(user, (response) => {
+    let person = null;
+    if(message.mentions.users.first() && args[0] !== null){
+      person = args[0].slice(2, -1);
+      if(!client.users.cache.get(person)){
+        return message.reply("To find someones stats you need to mention them");
+      }
+    }else{
+      person = user;
+    }
+    boxInfo.allPokemonForUser(person, (response) => {
       if(response === undefined){
         return message.reply("You currently haven't caught any pokemon!");
       }
@@ -307,5 +316,4 @@ client.on("messageCreate", message => {
   }*/
 });
 
-//client.login(process.env.DISCORD_TOKEN);
-client.login("MTA3MzU3OTk5MjAxOTExMjA3Nw.GQo7_X.oTuhBRpLYshfSJd38ujhGyXbWx5Yt0MseUu_uQ");
+client.login(process.env.DISCORD_TOKEN);
