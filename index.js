@@ -308,7 +308,7 @@ client.on("messageCreate", message => {
   }
   
   else if (command === "help"){
-    message.reply("```!pokeballs | See how many pokeballs you have``````!catch | Catch the current pokemon``````!shop | See what is avaliable in the shop``````!buy | Buy an item from the shop``````!coins | See how many coins you have```")
+    message.reply("```!stats | See your stats (Pokeballs & Coins)``````!catch {pokemon} | Catch the current pokemon``````!shop | See what is avaliable in the shop``````!buy {item} | Buy an item from the shop``````!box | See what pokemon you have caught```")
   }
 /*
   else{
